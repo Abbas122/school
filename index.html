@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>School Management System</title>
+    <style>
+        body { font-family: Arial; margin:0; background:#f4f4f4; }
+        header { background:#1f2937; color:white; padding:20px; text-align:center;}
+        section { padding:20px; max-width:1000px; margin:auto;}
+        .card { background:white; padding:20px; margin-bottom:20px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1);}
+        input, select { padding:8px; margin:5px 0; width:100%; }
+        button { padding:8px 15px; background:#3b82f6; color:white; border:none; cursor:pointer; margin-top:10px;}
+        button:hover { background:#2563eb;}
+        table { width:100%; border-collapse:collapse; margin-top:10px;}
+        th, td { border:1px solid #ddd; padding:8px; text-align:center;}
+        th { background:#3b82f6; color:white;}
+        .delete { background:red; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>School Management System</h1>
+</header>
+
+<section>
+
+<div class="card">
+    <h2>Add Student</h2>
+    <input type="text" id="studentName" placeholder="Student Name">
+    <input type="number" id="studentAge" placeholder="Age">
+    <button onclick="addStudent()">Add Student</button>
+</div>
+
+<div class="card">
+    <h2>Add Teacher</h2>
+    <input type="text" id="teacherName" placeholder="Teacher Name">
+    <input type="text" id="teacherSubject" placeholder="Subject">
+    <button onclick="addTeacher()">Add Teacher</button>
+</div>
+
+<div class="card">
+    <h2>Add Class</h2>
+    <input type="text" id="className" placeholder="Class Name">
+    <button onclick="addClass()">Add Class</button>
+</div>
+
+<div class="card">
+    <h2>Students</h2>
+    <table id="studentsTable">
+        <tr><th>Name</th><th>Age</th><th>Action</th></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h2>Teachers</h2>
+    <table id="teachersTable">
+        <tr><th>Name</th><th>Subject</th><th>Action</th></tr>
+    </table>
+</div>
+
+<div class="card">
+    <h2>Classes</h2>
+    <table id="classesTable">
+        <tr><th>Class Name</th><th>Action</th></tr>
+    </table>
+</div>
+
+</section>
+
+<script>
+let students = JSON.parse(localStorage.getItem("students")) || [];
+let teachers = JSON.parse(localStorage.getItem("teachers")) || [];
+let classes = JSON.parse(localStorage.getItem("classes")) || [];
+
+function saveData(){
+    localStorage.setItem("students", JSON.stringify(students));
+    localStorage.setItem("teachers", JSON.stringify(teachers));
+    localStorage.setItem("classes", JSON.stringify(classes));
+}
+
+function addStudent(){
+    let name = document.getElementById("studentName").value;
+    let age = document.getElementById("studentAge").value;
+    if(name && age){
+        students.push({name, age});
+        saveData();
+        displayStudents();
+    }
+}
+
+function addTeacher(){
+    let name = document.getElementById("teacherName").value;
+    let subject = document.getElementById("teacherSubject").value;
+    if(name && subject){
+        teachers.push({name, subject});
+        saveData();
+        displayTeachers();
+    }
+}
+
+function addClass(){
+    let name = document.getElementById("className").value;
+    if(name){
+        classes.push({name});
+        saveData();
+        displayClasses();
+    }
+}
+
+function deleteStudent(index){
+    students.splice(index,1);
+    saveData();
+    displayStudents();
+}
+
+function deleteTeacher(index){
+    teachers.splice(index,1);
+    saveData();
+    displayTeachers();
+}
+
+function deleteClass(index){
+    classes.splice(index,1);
+    saveData();
+    displayClasses();
+}
+
+function displayStudents(){
+    let table = document.getElementById("studentsTable");
+    table.innerHTML = "<tr><th>Name</th><th>Age</th><th>Action</th></tr>";
+    students.forEach((s,i)=>{
+        table.innerHTML += `<tr>
+            <td>${s.name}</td>
+            <td>${s.age}</td>
+            <td><button class="delete" onclick="deleteStudent(${i})">Delete</button></td>
+        </tr>`;
+    });
+}
+
+function displayTeachers(){
+    let table = document.getElementById("teachersTable");
+    table.innerHTML = "<tr><th>Name</th><th>Subject</th><th>Action</th></tr>";
+    teachers.forEach((t,i)=>{
+        table.innerHTML += `<tr>
+            <td>${t.name}</td>
+            <td>${t.subject}</td>
+            <td><button class="delete" onclick="deleteTeacher(${i})">Delete</button></td>
+        </tr>`;
+    });
+}
+
+function displayClasses(){
+    let table = document.getElementById("classesTable");
+    table.innerHTML = "<tr><th>Class Name</th><th>Action</th></tr>";
+    classes.forEach((c,i)=>{
+        table.innerHTML += `<tr>
+            <td>${c.name}</td>
+            <td><button class="delete" onclick="deleteClass(${i})">Delete</button></td>
+        </tr>`;
+    });
+}
+
+displayStudents();
+displayTeachers();
+displayClasses();
+</script>
+
+</body>
+</html>
